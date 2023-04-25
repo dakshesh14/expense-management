@@ -19,7 +19,7 @@ class ExpenseServices extends ApiBase {
     return await this.patch<IExpense>(`/expenses/${expense.id}/`, expense);
   }
 
-  static async deleteExpense(id: number) {
+  static async deleteExpense(id: string) {
     return await this.delete(`/expenses/${id}`);
   }
 }

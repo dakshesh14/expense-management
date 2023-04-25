@@ -1,4 +1,10 @@
+import { useState } from "react";
+
+// swr
 import useSWR from "swr";
+
+// components
+import { DeleteConfirmModal } from "@/components";
 
 // hoc
 import withAuth from "@/hoc/withAuthentication";
@@ -6,10 +12,20 @@ import withAuth from "@/hoc/withAuthentication";
 // services
 import ExpensesServices from "@/services/expenses";
 
+// helpers
+import { formatTime, timeAgo } from "@/helpers";
+
+// icons
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
+
 const Home = () => {
-  const { data: expenses, error } = useSWR("expenses", () =>
-    ExpensesServices.getExpenses()
-  );
+  const [deleteSelected, setDeleteSelected] = useState<string | null>(null);
+
+  const {
+    data: expenses,
+    error,
+    mutate,
+  } = useSWR("expenses", () => ExpensesServices.getExpenses());
 
   if (!expenses)
     return (
@@ -100,36 +116,52 @@ const Home = () => {
                 <tbody>
                   {expenses.map((expense) => (
                     <tr key={expense.id}>
-                      <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                         {expense.name}
                       </td>
-                      <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                      <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
                         {expense.category_display}
                       </td>
-                      <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                        {expense.date_of_expense.toString()}
+                      <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                        {formatTime(expense.date_of_expense)}
                       </td>
-                      <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                        {expense.amount}
+                      <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                        INR {expense.amount}
                       </td>
-                      <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                        {expense.update_at.toString()}
+                      <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                        {timeAgo(expense.update_at)}
                       </td>
-                      <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                      <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
                         {expense.can_modify
                           ? `${expense.user_details.username} (You)`
                           : expense.user_details.username}
                       </td>
-                      <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                        {expense.can_modify && (
-                          <a
-                            href="#"
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            Edit
-                            <span className="sr-only">, {expense.name}</span>
-                          </a>
-                        )}
+                      <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                        <div className="flex items-center gap-2">
+                          {expense.can_modify && (
+                            <button
+                              type="button"
+                              className="text-indigo-600 hover:text-indigo-500"
+                            >
+                              <PencilIcon className="h-5 w-5" />
+                              <span className="sr-only">
+                                , Edit {expense.name}
+                              </span>
+                            </button>
+                          )}
+                          {expense.can_modify && (
+                            <button
+                              type="button"
+                              onClick={() => setDeleteSelected(expense.id)}
+                              className="text-red-600 hover:text-red-500"
+                            >
+                              <TrashIcon className="h-5 w-5" />
+                              <span className="sr-only">
+                                , Delete {expense.name}
+                              </span>
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -139,6 +171,36 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <DeleteConfirmModal
+        isOpen={deleteSelected !== null}
+        onClose={() => {
+          setDeleteSelected(null);
+        }}
+        onConfirm={async () => {
+          if (deleteSelected === null) return;
+          await ExpensesServices.deleteExpense(deleteSelected)
+            .then(() => {
+              setDeleteSelected(null);
+              mutate((prevData) =>
+                (prevData ?? []).filter(
+                  (expense) => expense.id !== deleteSelected
+                )
+              );
+            })
+            .catch((error) => {
+              setDeleteSelected(null);
+              if (
+                error?.response?.status === 403 ||
+                error?.response?.status === 401
+              ) {
+                alert(
+                  error?.response?.data?.detail ??
+                    "You don't have permission to delete this expense"
+                );
+              }
+            });
+        }}
+      />
     </div>
   );
 };
