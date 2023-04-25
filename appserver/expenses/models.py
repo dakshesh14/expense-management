@@ -33,6 +33,7 @@ class Expenses(models.Model):
     update_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        ordering = ["-created_at"]
         verbose_name = "Expense"
         verbose_name_plural = "Expenses"
 

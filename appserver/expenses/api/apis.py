@@ -25,6 +25,7 @@ class ExpensesList(generics.ListCreateAPIView):
     ordering_fields = ["date_of_expense"]
 
     pagination_class = PageNumberPagination
+    pagination_class.page_size = 10
 
     def get_queryset(self):
         if self.request.user.is_superuser:

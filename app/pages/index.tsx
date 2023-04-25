@@ -17,6 +17,7 @@ import { formatTime, timeAgo } from "@/helpers";
 
 // icons
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 const Home = () => {
   const [deleteSelected, setDeleteSelected] = useState<string | null>(null);
@@ -114,7 +115,7 @@ const Home = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {expenses.map((expense) => (
+                  {expenses.results.map((expense) => (
                     <tr key={expense.id}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                         {expense.name}
@@ -170,7 +171,40 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        <nav className="isolate mt-5 flex justify-end" aria-label="Pagination">
+          <button
+            type="button"
+            disabled={expenses.previous === null}
+            className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            <span className="sr-only">Previous</span>
+            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            aria-current="page"
+            className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            1
+          </button>
+          <button
+            type="button"
+            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            2
+          </button>
+          <button
+            type="button"
+            disabled={expenses.next === null}
+            className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            <span className="sr-only">Next</span>
+            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </nav>
       </div>
+
       <DeleteConfirmModal
         isOpen={deleteSelected !== null}
         onClose={() => {
@@ -181,11 +215,15 @@ const Home = () => {
           await ExpensesServices.deleteExpense(deleteSelected)
             .then(() => {
               setDeleteSelected(null);
-              mutate((prevData) =>
-                (prevData ?? []).filter(
-                  (expense) => expense.id !== deleteSelected
-                )
-              );
+              mutate((prevData) => {
+                if (!prevData) return prevData;
+                return {
+                  ...prevData,
+                  results: prevData.results.filter(
+                    (expense) => expense.id !== deleteSelected
+                  ),
+                };
+              });
             })
             .catch((error) => {
               setDeleteSelected(null);

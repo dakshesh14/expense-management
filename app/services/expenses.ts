@@ -1,10 +1,10 @@
 import ApiBase from "./api-base";
 
-import type { IExpense, IExpenseForm } from "@/types";
+import type { IExpense, IExpenseForm, IExpenseResponse } from "@/types";
 
 class ExpenseServices extends ApiBase {
   static async getExpenses() {
-    return await this.get<IExpense[]>("/expenses/");
+    return await this.get<IExpenseResponse>("/expenses/");
   }
 
   static async getExpenseById(id: string) {

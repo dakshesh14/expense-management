@@ -13,6 +13,13 @@ export interface IExpense {
   can_modify: boolean;
 }
 
+export interface IExpenseResponse {
+  count: number;
+  next: string;
+  previous: null;
+  results: IExpense[];
+}
+
 export interface IExpenseForm {
   name: string;
   description: string;
