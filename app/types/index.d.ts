@@ -4,8 +4,10 @@ export interface IExpense {
   description: string;
   date_of_expense: Date;
   category: string;
+  category_display: string;
   amount: number;
   created_by: number;
+  user_details: User;
   created_at: Date;
   update_at: Date;
   can_modify: boolean;

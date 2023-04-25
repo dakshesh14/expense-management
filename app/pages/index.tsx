@@ -104,7 +104,7 @@ const Home = () => {
                         {expense.name}
                       </td>
                       <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                        {expense.category}
+                        {expense.category_display}
                       </td>
                       <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                         {expense.date_of_expense.toString()}
@@ -117,8 +117,8 @@ const Home = () => {
                       </td>
                       <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                         {expense.can_modify
-                          ? `${expense.created_by} (You)`
-                          : expense.created_by}
+                          ? `${expense.user_details.username} (You)`
+                          : expense.user_details.username}
                       </td>
                       <td className="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                         {expense.can_modify && (
