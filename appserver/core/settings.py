@@ -50,6 +50,13 @@ ALLOWED_HOSTS = [
     "expense-management-production-00c2.up.railway.app",
 ]
 
+# csrf
+# https://docs.djangoproject.com/en/4.1/ref/settings/#csrf-cookie-secure
+
+CSRF_TRUSTED_ORIGINS = [
+    "localhost",
+    "expense-management-production-00c2.up.railway.app",
+]
 
 # Application definition
 
