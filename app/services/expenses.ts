@@ -3,8 +3,12 @@ import ApiBase from "./api-base";
 import type { IExpense, IExpenseForm, IExpenseResponse } from "@/types";
 
 class ExpenseServices extends ApiBase {
-  static async getExpenses() {
-    return await this.get<IExpenseResponse>("/expenses/");
+  static async getExpenses(params: {
+    page?: string | string[];
+    ordering?: string | string[];
+    search?: string | string[];
+  }) {
+    return await this.get<IExpenseResponse>("/expenses/", params);
   }
 
   static async getExpenseById(id: string) {

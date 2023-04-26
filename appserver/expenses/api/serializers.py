@@ -27,6 +27,11 @@ class ExpensesSerializer(serializers.ModelSerializer):
             "update_at",
             "can_modify",
         )
+        extra_kwargs = {
+            "created_by": {"read_only": True},
+            "created_at": {"read_only": True},
+            "update_at": {"read_only": True},
+        }
 
     def get_can_modify(self, obj):
         request = self.context.get("request")

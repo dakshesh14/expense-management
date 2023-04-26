@@ -22,7 +22,6 @@ class ExpensesList(generics.ListCreateAPIView):
 
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["name"]
-    ordering_fields = ["date_of_expense"]
 
     pagination_class = PageNumberPagination
     pagination_class.page_size = 10
