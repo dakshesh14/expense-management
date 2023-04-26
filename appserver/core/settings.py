@@ -45,6 +45,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.environ.get("DEBUG", False)
 
 ALLOWED_HOSTS = [
+    # FIXME: use env variable
     "localhost",
     "127.0.0.1",
     "expense-management-production-00c2.up.railway.app",
@@ -54,6 +55,7 @@ ALLOWED_HOSTS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#csrf-cookie-secure
 
 CSRF_TRUSTED_ORIGINS = [
+    # FIXME: use env variable
     "https://expense-management-gamma.vercel.app",
     "https://expense-management-production-00c2.up.railway.app",
 ]
@@ -173,6 +175,7 @@ if DEBUG:
     CORS_ORIGIN_ALLOW_ALL = True
 else:
     CORS_ALLOWED_ORIGINS = [
+        # FIXME: use env variable
         "https://expense-management-gamma.vercel.app",
     ]
 
