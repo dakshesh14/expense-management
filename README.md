@@ -16,7 +16,7 @@ Make sure both python and nodejs are installed on your system. This is a monorep
 ### Backend
 
 ```bash
-  cd backend
+  cd appserver
   pip install -r requirements.txt
   python manage.py migrate
   python manage.py runserver
@@ -25,7 +25,7 @@ Make sure both python and nodejs are installed on your system. This is a monorep
 ### Frontend
 
 ```bash
-  cd frontend
+  cd app
   npm install
   npm run dev
 ```
