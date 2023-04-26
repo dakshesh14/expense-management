@@ -166,7 +166,7 @@ if DEBUG:
     CORS_ORIGIN_ALLOW_ALL = True
 else:
     CORS_ALLOWED_ORIGINS = [
-        # add to trusted origins
+        "https://expense-management-gamma.vercel.app",
     ]
 
 # django rest framework
